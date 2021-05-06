@@ -129,4 +129,7 @@ dmypy.json
 .pyre/
 
 jsonloggeriso8601datetime 
+readjsonfile.py 
+logs/
+
 

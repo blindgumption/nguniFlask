@@ -17,7 +17,7 @@ dispatcher_count = 0
 class SubdomainDispatcher(object):
 
     def __init__(self, domain, create_app):
-        logger.info('creating dispatcher')
+        logger.info(f'creating dispatcher for domain {domain}')
         self.domain = domain
         self.create_app = create_app
         self.lock = Lock()
@@ -34,12 +34,14 @@ class SubdomainDispatcher(object):
             # with instances being an object instance variable,
             # do we really need this lock?
             # each worker has its own instance of the dispatcher application 
+            # maybe the lock is needed if using this dispatcher in something other than gunicorn, 
+            # or a different configuration for gunicorn.   
             app = self.instances.get(subdomain)
             if app is None:
                 logger.info(f"adding app for subdomain [{subdomain}], instances has [{len(self.instances)}] apps")
-                app = self.create_app(subdomain)
+                app = self.create_app(subdomain, self.domain)
                 self.instances[subdomain] = app
-                logger.info(f"added app [{app}] for subdomain [{subdomain}], instances now has [{len(self.instances)}] apps")
+                logger.debug(f"added app [{app}] for subdomain [{subdomain}], instances now has [{len(self.instances)}] apps")
             return app
 
     def __call__(self, environ, start_response):
@@ -51,13 +53,14 @@ import home
 import blog 
 from werkzeug.exceptions import NotFound
 
-def make_app(subdomain):
+def make_app(subdomain, domain):
     logger.info(f'making app for subdomain {subdomain}')
+    config = {'domain': domain, 'subdomain': subdomain}
     try:
         if subdomain == 'home':
-            return home.create_app()
+            return home.create_app(config)
         elif subdomain == 'blog':
-            return blog.create_app()
+            return blog.create_app(config)
         else:  
             # if there is no app for that subdomain we still have
             # to return a WSGI application that handles that request.
@@ -68,4 +71,4 @@ def make_app(subdomain):
     except Exception as e:
         logger.exception('exception when trying to create new application')
 
-application  = SubdomainDispatcher('bgs.local', make_app)
+application  = SubdomainDispatcher('ngunif.local', make_app)

@@ -1,6 +1,8 @@
 """
- the home app represents the base of blindgumption.
- it can be reached as blindgumption.com, www.blindgumption.com, or home.blindgumption.com 
+ the home app represents the main appplication for the domain
+ it can be reached as example.com, www.example.com, or home.example.com 
+ These subdomains are all hard-coded in the dispatcher.
+ I know that's not good, see the comments in the dispatcher...
 """
 
 # first get logger to ensure root logger is set before anything is initiated 
@@ -9,14 +11,21 @@ logger = getJsonLogger(__name__)
 
 from flask import Flask 
 
-def create_app(config_name=None):
+subdomain = 'home'
+
+def create_app(config=None):
+    domain = None 
+    if config:
+        domain = config.get('domain')
+
+    logger.info(f'creating app for {subdomain}.{domain}')
     app = Flask(__name__)
 
     # a simple page that says hello
     @app.route('/')
     def index():
-        logger.info('in home:index')
-        return 'Hello from the home of BlindGumption!'
+        logger.info(f'in {subdomain}:index')
+        return f'Hello from the home of {domain}!'
 
     return app 
 
