@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn instance to serve nguniFlask 
+After=network.target
+
+[Service]
+User=joel
+Group=www-data
+WorkingDirectory=/home/joel/projects/python/flask/nguniFlask
+Environment="PATH=/home/joel/projects/python/flask/nguniFlask/.venv/bin"
+ExecStart=/home/joel/projects/python/flask/nguniFlask/.venv/bin/gunicorn --config /home/joel/projects/python/flask/nguniFlask/gunicorn.conf.py
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,8 @@
+server {
+    listen 80;
+    server_name ngunif.local *.ngunif.local;
+    location / {
+        include proxy_params;
+        proxy_pass http://ngunif.local:8000;
+    }
+}
