@@ -6,8 +6,8 @@ This idea is from the flask documentation, see:
 """
 
 # first get logger to ensure root logger is set before anything is initiated 
-from jsonloggeriso8601datetime import getJsonLogger 
-logger = getJsonLogger(__name__)
+import logging 
+logger = logging.getLogger(__name__)
 
 
 from threading import Lock

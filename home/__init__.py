@@ -5,9 +5,8 @@
  I know that's not good, see the comments in the dispatcher...
 """
 
-# first get logger to ensure root logger is set before anything is initiated 
-from jsonloggeriso8601datetime import getJsonLogger 
-logger = getJsonLogger(__name__)
+import logging 
+logger = logging.getLogger(__name__)
 
 from flask import Flask 
 
@@ -30,3 +29,4 @@ def create_app(config=None):
     return app 
 
 
+## end of file 
